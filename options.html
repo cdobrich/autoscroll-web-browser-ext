@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      width: 280px;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    h3 { margin-top: 0; color: #333; }
+    .option-group {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+      margin-top: 3px;
+      cursor: pointer;
+    }
+    label {
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #555;
+    }
+    .status {
+      font-size: 11px;
+      color: green;
+      height: 15px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Autoscroll Settings</h3>
+  <div class="option-group">
+    <input type="checkbox" id="holdToScroll">
+    <label for="holdToScroll">
+      <strong>Press-and-Hold mode</strong><br>
+      Only scroll while holding the middle-click button. Release to stop.
+    </label>
+  </div>
+  <div id="status" class="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
