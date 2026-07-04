@@ -9,10 +9,9 @@ let speedY = 0;
 let scrollIndicator = null;
 
 // Configuration
-const SPEED_MODIFIER = 0.15; // Tweak this to make scrolling faster or slower
-const DEADZONE = 10;          // Pixels of movement required before scrolling kicks in
+const SPEED_MODIFIER = 0.15;
+const DEADZONE = 10;
 
-// Create the visual anchor indicator (the circle at the click origin)
 function createIndicator(x, y) {
   scrollIndicator = document.createElement('div');
   scrollIndicator.style.position = 'fixed';
@@ -36,20 +35,17 @@ function removeIndicator() {
   }
 }
 
-// Start the continuous scroll loop
 function startScrollLoop() {
   if (scrollInterval) return;
   
   scrollInterval = setInterval(() => {
     if (!isScrolling) return;
-    
-    // Perform the multi-directional scroll
     window.scrollBy({
       left: speedX,
       top: speedY,
-      behavior: 'auto' // 'auto' offers tighter loop responsiveness than 'smooth'
+      behavior: 'auto'
     });
-  }, 16); // ~60 frames per second
+  }, 16);
 }
 
 function stopScrollLoop() {
@@ -63,26 +59,37 @@ function stopScrollLoop() {
 
 // Event Listeners
 window.addEventListener('mousedown', (e) => {
-  // button 1 is the middle mouse button (scroll wheel click)
-  if (e.button !== 1) return; 
+  if (e.button !== 1) return; // Only care about middle-click
 
   if (isScrolling) {
-    // Second middle-click: Stop scrolling
+    // If already scrolling, any middle-click stops it
     isScrolling = false;
     stopScrollLoop();
     removeIndicator();
-  } else {
-    // First middle-click: Initialize scrolling origin
-    isScrolling = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    
-    createIndicator(startX, startY);
-    startScrollLoop();
-    
-    // Prevent default browser behavior (like the native autoscroll if on Windows)
-    e.preventDefault();
+    return;
   }
+
+  // --- NEW FIX: Check if we are clicking a link ---
+  // .closest('a') checks the clicked element and its parents, 
+  // ensuring text/images inside a link don't bypass the check.
+  const clickedLink = e.target.closest('a');
+  
+  // If a valid link with an href attribute is clicked, bail out 
+  // and let the browser naturally open the link in a new tab.
+  if (clickedLink && clickedLink.getAttribute('href')) {
+    return;
+  }
+  // ------------------------------------------------
+
+  // Initialize scrolling if it wasn't a link
+  isScrolling = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  
+  createIndicator(startX, startY);
+  startScrollLoop();
+  
+  e.preventDefault();
 });
 
 window.addEventListener('mousemove', (e) => {
@@ -91,14 +98,12 @@ window.addEventListener('mousemove', (e) => {
   const deltaX = e.clientX - startX;
   const deltaY = e.clientY - startY;
 
-  // Apply horizontal deadzone and speed calculation
   if (Math.abs(deltaX) > DEADZONE) {
     speedX = (deltaX - Math.sign(deltaX) * DEADZONE) * SPEED_MODIFIER;
   } else {
     speedX = 0;
   }
 
-  // Apply vertical deadzone and speed calculation
   if (Math.abs(deltaY) > DEADZONE) {
     speedY = (deltaY - Math.sign(deltaY) * DEADZONE) * SPEED_MODIFIER;
   } else {
@@ -106,7 +111,6 @@ window.addEventListener('mousemove', (e) => {
   }
 });
 
-// Optional: Stop scrolling if the user clicks any other mouse button
 window.addEventListener('click', (e) => {
   if (isScrolling && e.button !== 1) {
     isScrolling = false;
