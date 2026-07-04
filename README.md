@@ -22,3 +22,9 @@ How to load and test this extension:
 
 6. Reload any existing page in your web browser before testing, (like a long news article or documentation page) and test it by middle-clicking! (Note: Extensions will not run on standard chrome:// system pages or the Chrome Web Store).
 
+# Configuring Extension
+
+1. Click on the Plugins toolbar button.
+2. Select the three-dots menu
+3. Click the `Options` item
+
